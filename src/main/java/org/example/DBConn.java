@@ -108,7 +108,7 @@ public class DBConn {
 
     }
 
-    public static void dbSave(String user_id, String user_pw, String user_name) {
+    public static void register() {
         PreparedStatement pstmt = null;
         Connection conn = null;
 
@@ -140,6 +140,15 @@ public class DBConn {
         }
 
         try {
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("가입할 아이디를 입력하세요.");
+            String user_id = scanner.next();
+            System.out.print("가입할 비밀번호를 입력하세요.");
+            String user_pw = scanner.next();
+            System.out.print("가입할 이름을 입력하세요.");
+            String user_name = scanner.next();
+
 
             // Insert문 ?부분은 아래의 입력값이 자동으로 변환이 됩니다.
             String sql = "INSERT INTO `game` (`user_id`, `user_pw`, `user_name`) VALUES (?, ?, ?)";
@@ -158,9 +167,10 @@ public class DBConn {
             //SQL 실행
             int result = pstmt.executeUpdate();
             if (result == 0) {
-                System.out.println("데이터 넣기 실패");
+                System.out.println("회원가입에 실패하였습니다.");
             } else {
-                System.out.println("데이터 넣기 성공");
+                System.out.println("회원가입에 성공하였습니다.");
+                login();
             }
 
         } catch (SQLException e) {
@@ -231,13 +241,16 @@ public class DBConn {
 
         try {
             String sql = "SELECT * FROM `game`";
+            //String sql_name = "SELECT user_name FROM `game` WHERE user_id = 'user_id'";
 
             //쿼리 준비
             pstmt = conn.prepareStatement(sql);
 
+
             //rs 변수에 데이터 삽입
             rs = pstmt.executeQuery();
 
+            //DB 변수
             String num = null;
             String user_id = null;
             String user_pw = null;
@@ -247,7 +260,7 @@ public class DBConn {
             String update_at = null;
 
             Scanner scanner = new Scanner(System.in);
-            //아이디 입력,
+            //Scanner 입력 변수
             String answer = null;
             String id = null;
             String pw = null;
@@ -256,23 +269,30 @@ public class DBConn {
             System.out.print("아이디를 가지고 계신가요? y/n: ");
             answer = scanner.next(); //아이디가 맞다면
 
-            while (rs.next()) {
-                user_pw = rs.getString("user_pw");
-                System.out.println(user_pw);
-                user_id = rs.getString("user_id");
-                System.out.println(user_id);
+//            while (rs.next()) {
+//                user_pw = rs.getString("user_pw");
+//                System.out.println(user_pw); //디버깅
+//                user_id = rs.getString("user_id");
+//                System.out.println(user_id); //디버깅
+//                System.out.println();
+//            }
 
-                System.out.println();
-
-            }
 
             if (answer.equalsIgnoreCase("y")) { //y라면
                 System.out.print("아이디 입력: ");
                 id = scanner.next();
+                System.out.print("패스워드 입력: ");
+                pw = scanner.next();
 
                 while (rs.next()) {
                     user_id = rs.getString("user_id");
+                    user_pw = rs.getString("user_pw");
+                    user_name = rs.getString("user_name");
+
                     if (id.equalsIgnoreCase(user_id)) {
+                        break;
+                    }
+                    if (pw.equalsIgnoreCase(user_pw)) {
                         break;
                     }
                 }
@@ -280,31 +300,29 @@ public class DBConn {
 
                 if (id.equalsIgnoreCase(user_id)) { //아이디가 맞다면
                     System.out.println("아이디가 있습니다. 성공");
-                    System.out.print("패스워드 입력: ");
-                    pw = scanner.next();
 
-                    while (rs.next()) {
-                        user_pw = rs.getString("user_pw");
-                        System.out.println(user_pw);
-
-                        if (pw.equalsIgnoreCase(user_pw)) {
-                            break;
-                        }
-                    }
 
                     if (id.equalsIgnoreCase(user_id) && pw.equalsIgnoreCase(user_pw)) {
                         System.out.println("로그인 성공!");
                         System.out.println("==================");
                         System.out.println("당신의 아이디: " + user_id);
                         System.out.println("당신의 패스워드: " + user_pw);
-                        //System.out.println("당신의 이름: " + user_name);
+                        System.out.println("당신의 이름: " + user_name);
                     } else {
                         System.out.println("비밀번호가 틀렸습니다!");
                     }
-                } else {
-                    System.out.println("아이디가 없습니다.");
                 }
-            } else {
+                else
+                { //회원가입
+                    System.out.println("아이디가 없습니다. 회원가입으로 이동합니다.");
+                    register();
+                }
+            }
+            else if(answer.equalsIgnoreCase("n")){
+                System.out.println("아이디가 없으므로, 회원가입으로 이동합니다.");
+                register();
+            }
+            else {
                 System.out.println("로그인 실패!");
             }
 
