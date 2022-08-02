@@ -1,10 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
 
 public class DBConn {
@@ -167,36 +163,40 @@ public class DBConn {
 
     //로그인
     public static void login() {
+        //DB 변수
+        String num = null;
+        String user_id = null;
+        String user_pw = null;
+        String user_name = null;
+        String marble = null;
+        String create_at = null;
+        String update_at = null;
+
+        Scanner scanner = new Scanner(System.in);
+        //Scanner 입력 변수
+        String answer = null;
+        String id = null;
+        String pw = null;
+        String name = null;
+
         dbConnect();
         PreparedStatement pstmt = null;
+        Statement stmt = null;
         Connection conn = dbConnect();
         ResultSet rs = null;
         try {
             String sql = "SELECT * FROM `game`";
             //String sql_name = "SELECT user_name FROM `game` WHERE user_id = 'user_id'";
+            String sql_up = "UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';";
 
             //쿼리 준비
             pstmt = conn.prepareStatement(sql);
-
+            stmt = conn.createStatement();
 
             //rs 변수에 데이터 삽입
             rs = pstmt.executeQuery();
 
-            //DB 변수
-            String num = null;
-            String user_id = null;
-            String user_pw = null;
-            String user_name = null;
-            String marble = null;
-            String create_at = null;
-            String update_at = null;
 
-            Scanner scanner = new Scanner(System.in);
-            //Scanner 입력 변수
-            String answer = null;
-            String id = null;
-            String pw = null;
-            String name = null;
             System.out.println("오징어 게임에 오신 것을 환영합니다.");
             System.out.print("아이디를 가지고 계신가요? y/n: ");
             answer = scanner.next(); //아이디가 맞다면
@@ -228,8 +228,6 @@ public class DBConn {
                         break;
                     }
                 }
-
-
                 if (id.equalsIgnoreCase(user_id)) { //아이디가 맞다면
                     System.out.println("아이디가 있습니다. 성공");
                     if (id.equalsIgnoreCase(user_id) && pw.equalsIgnoreCase(user_pw)) {
@@ -238,6 +236,11 @@ public class DBConn {
                         System.out.println("당신의 아이디: " + user_id);
                         System.out.println("당신의 패스워드: " + user_pw);
                         System.out.println("당신의 이름: " + user_name);
+
+                        stmt = conn.createStatement();
+                        stmt.execute("UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';");
+
+                        System.out.println("로그인 기록이 업데이트 되었습니다..");
                     } else {
                         System.out.println("비밀번호가 틀렸습니다!");
                     }
@@ -251,7 +254,6 @@ public class DBConn {
             } else {
                 System.out.println("로그인 실패!");
             }
-
 
         } catch (SQLException e) {
             System.out.println("error: " + e);
