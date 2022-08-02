@@ -62,14 +62,12 @@ public class DBConn {
 
         try {
             Scanner scanner = new Scanner(System.in);
-
             System.out.print("가입할 아이디를 입력하세요.");
             String user_id = scanner.next();
             System.out.print("가입할 비밀번호를 입력하세요.");
             String user_pw = scanner.next();
             System.out.print("가입할 이름을 입력하세요.");
             String user_name = scanner.next();
-
 
             // Insert문 ?부분은 아래의 입력값이 자동으로 변환이 됩니다.
             String sql = "INSERT INTO `game` (`user_id`, `user_pw`, `user_name`) VALUES (?, ?, ?)";
@@ -97,18 +95,7 @@ public class DBConn {
         } catch (SQLException e) {
             System.out.println("error: " + e);
         } finally { //데이터 베이스를 연결했으면 항상 닫아야함 (안하면 풀 현상)
-            try {
-                //데이터 닫기
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                //sql 닫기
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            dbClose();
         }
     }
 
@@ -131,9 +118,8 @@ public class DBConn {
         String name = null;
 
         dbConnect();
-
-
         Connection conn = dbConnect();
+
         try {
             String sql = "SELECT * FROM `game`";
             //String sql_up = "UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';";
