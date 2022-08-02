@@ -9,18 +9,7 @@ import java.util.Scanner;
 
 public class DBConn {
 
-
     public static void dbConnect() {
-
-
-    }
-
-    public static void dbView() {
-        PreparedStatement pstmt = null;
-        Connection conn = null;
-
-        ResultSet rs = null;
-
         final String driver = "org.mariadb.jdbc.Driver"; //패키지
         final String DB_IP = "localhost"; //접속 아이피
         final String DB_PORT = "3306"; //포트
@@ -28,12 +17,9 @@ public class DBConn {
         final String DB_URL = //DB 연결 방식
                 "jdbc:mariadb://" + DB_IP + ":" + DB_PORT + "/" + DB_NAME;
 
-        System.out.println(DB_URL); //디버그
-
-
         try {
             Class.forName(driver);
-            conn = DriverManager.getConnection(DB_URL, "root", "1234");
+            Connection conn = DriverManager.getConnection(DB_URL, "root", "1234");
             if (conn != null) {
                 System.out.println("DB 접속 성공");
             }
@@ -45,6 +31,13 @@ public class DBConn {
             System.out.println("DB 접속 실패");
             e.printStackTrace();
         }
+    }
+
+    public static void dbView() {
+        dbConnect();
+        PreparedStatement pstmt = null;
+        Connection conn = null;
+        ResultSet rs = null;
 
         try {
             String sql = "SELECT * FROM `game`";
@@ -105,39 +98,14 @@ public class DBConn {
                 e.printStackTrace();
             }
         }
-
     }
 
+    //회원가입
     public static void register() {
+        dbConnect();
         PreparedStatement pstmt = null;
         Connection conn = null;
-
         ResultSet rs = null;
-
-        final String driver = "org.mariadb.jdbc.Driver"; //패키지
-        final String DB_IP = "localhost"; //접속 아이피
-        final String DB_PORT = "3306"; //포트
-        final String DB_NAME = "dbdb"; //DB 이름
-        final String DB_URL = //DB 연결 방식
-                "jdbc:mariadb://" + DB_IP + ":" + DB_PORT + "/" + DB_NAME;
-
-        System.out.println(DB_URL); //디버그
-
-
-        try {
-            Class.forName(driver);
-            conn = DriverManager.getConnection(DB_URL, "root", "1234");
-            if (conn != null) {
-                System.out.println("DB 접속 성공");
-            }
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로드 실패");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            System.out.println("DB 접속 실패");
-            e.printStackTrace();
-        }
 
         try {
             Scanner scanner = new Scanner(System.in);
@@ -191,54 +159,12 @@ public class DBConn {
         }
     }
 
+    //로그인
     public static void login() {
-
-
-        //y = 아이디 입력 후 아이디가 있다면 로그인 프로세스로 이동
-        //아이디 없으면 신규가입
-
-
-        //n = 신규 가입
-        //아이디, 패스워드,이름 입력받고 디비 저장 후 로그인 프로세스로 이동
-
-        // 로그인 프로세스)
-        //디비에 아이디 패스워드가 있는지 확인해서 있으면 게임 시작
-        //없으면 다시 로그인
-
-        //한번 게임을 하고 게임 데이터를 저장할 것인가?
-        //y = 저장 후 게임 종료
-        //n = 게임 종료
-        //다시 게임을 실행하면 자신에 아이디에 따라 구슬 갯수 정보 출력
-
-
+        dbConnect();
         PreparedStatement pstmt = null;
         Connection conn = null;
-
         ResultSet rs = null;
-
-        final String driver = "org.mariadb.jdbc.Driver"; //패키지
-        final String DB_IP = "localhost"; //접속 아이피
-        final String DB_PORT = "3306"; //포트
-        final String DB_NAME = "dbdb"; //DB 이름
-        final String DB_URL = //DB 연결 방식
-                "jdbc:mariadb://" + DB_IP + ":" + DB_PORT + "/" + DB_NAME;
-
-
-        try {
-            Class.forName(driver);
-            conn = DriverManager.getConnection(DB_URL, "root", "1234");
-            if (conn != null) {
-                System.out.println("DB 접속 성공");
-            }
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로드 실패");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            System.out.println("DB 접속 실패");
-            e.printStackTrace();
-        }
-
         try {
             String sql = "SELECT * FROM `game`";
             //String sql_name = "SELECT user_name FROM `game` WHERE user_id = 'user_id'";
@@ -300,8 +226,6 @@ public class DBConn {
 
                 if (id.equalsIgnoreCase(user_id)) { //아이디가 맞다면
                     System.out.println("아이디가 있습니다. 성공");
-
-
                     if (id.equalsIgnoreCase(user_id) && pw.equalsIgnoreCase(user_pw)) {
                         System.out.println("로그인 성공!");
                         System.out.println("==================");
@@ -311,18 +235,14 @@ public class DBConn {
                     } else {
                         System.out.println("비밀번호가 틀렸습니다!");
                     }
-                }
-                else
-                { //회원가입
+                } else { //회원가입
                     System.out.println("아이디가 없습니다. 회원가입으로 이동합니다.");
                     register();
                 }
-            }
-            else if(answer.equalsIgnoreCase("n")){
+            } else if (answer.equalsIgnoreCase("n")) {
                 System.out.println("아이디가 없으므로, 회원가입으로 이동합니다.");
                 register();
-            }
-            else {
+            } else {
                 System.out.println("로그인 실패!");
             }
 
@@ -347,22 +267,5 @@ public class DBConn {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static String dbInfo(String str) {
-
-        String sql = "SELECT * FROM `game`";
-
-        String num = null;
-        String user_id = null;
-        String user_pw = null;
-        String user_name = null;
-        String marble = null;
-        String create_at = null;
-        String update_at = null;
-        String result = null;
-
-
-        return result;
     }
 }
