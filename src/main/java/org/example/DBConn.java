@@ -4,9 +4,13 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class DBConn {
+    static ResultSet rs = null;
+    static PreparedStatement pstmt = null;
+    static Connection conn = null;
+    static Statement stmt = null;
+
 
     public static Connection dbConnect() {
-
         Connection conn = null;
 
         final String driver = "org.mariadb.jdbc.Driver"; //패키지
@@ -32,83 +36,29 @@ public class DBConn {
         }
         return conn;
     }
-
-    /* 테스트 메소드 */
-    public static void dbView() {
-        Connection conn = null;
-        conn = dbConnect();
-
-
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
+    public static void dbClose(){
         try {
-            String sql = "SELECT * FROM `game`";
-
-            //쿼리 준비
-            pstmt = conn.prepareStatement(sql);
-
-            //rs 변수에 데이터 삽입
-            rs = pstmt.executeQuery();
-
-            String num = null;
-            String user_id = null;
-            String user_pw = null;
-            String user_name = null;
-            String marble = null;
-            String create_at = null;
-            String update_at = null;
-
-            //rs.next에 데이터가 들어오면 해당 반복문 실행
-            while (rs.next()) {
-                //rs.getString("컬럼명")
-                num = rs.getString("user_id");
-                user_id = rs.getString("user_id");
-                user_pw = rs.getString("user_pw");
-                user_name = rs.getString("user_name");
-                marble = rs.getString("marble");
-                create_at = rs.getString("create_at");
-                update_at = rs.getString("update_at");
-
-                System.out.println(num);
-                System.out.println(user_id);
-                System.out.println(user_pw);
-                System.out.println(user_name);
-                System.out.println(marble);
-                System.out.println(create_at);
-                System.out.println(update_at);
-                System.out.println();
+            //쿼리 닫기
+            if (rs != null) {
+                rs.close();
             }
-
-
+            //데이터 닫기
+            if (pstmt != null) {
+                pstmt.close();
+            }
+            //sql 닫기
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
         } catch (SQLException e) {
-            System.out.println("error: " + e);
-        } finally { //데이터 베이스를 연결했으면 항상 닫아야함 (안하면 풀 현상)
-            try {
-                //쿼리 닫기
-                if (rs != null) {
-                    rs.close();
-                }
-                //데이터 닫기
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                //sql 닫기
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         }
     }
 
     //회원가입
     public static void register() {
         dbConnect();
-        PreparedStatement pstmt = null;
         Connection conn = dbConnect();
-        ResultSet rs = null;
 
         try {
             Scanner scanner = new Scanner(System.in);
@@ -181,10 +131,9 @@ public class DBConn {
         String name = null;
 
         dbConnect();
-        PreparedStatement pstmt = null;
-        Statement stmt = null;
+
+
         Connection conn = dbConnect();
-        ResultSet rs = null;
         try {
             String sql = "SELECT * FROM `game`";
             //String sql_up = "UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';";
@@ -200,15 +149,6 @@ public class DBConn {
             System.out.println("오징어 게임에 오신 것을 환영합니다.");
             System.out.print("아이디를 가지고 계신가요? y/n: ");
             answer = scanner.next(); //아이디가 맞다면
-
-//            while (rs.next()) {
-//                user_pw = rs.getString("user_pw");
-//                System.out.println(user_pw); //디버깅
-//                user_id = rs.getString("user_id");
-//                System.out.println(user_id); //디버깅
-//                System.out.println();
-//            }
-
 
             if (answer.equalsIgnoreCase("y")) { //y라면
                 System.out.print("아이디 입력: ");
@@ -262,22 +202,56 @@ public class DBConn {
         } catch (SQLException e) {
             System.out.println("error: " + e);
         } finally { //데이터 베이스를 연결했으면 항상 닫아야함 (안하면 풀 현상)
-            try {
-                //쿼리 닫기
-                if (rs != null) {
-                    rs.close();
-                }
-                //데이터 닫기
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                //sql 닫기
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            dbClose();
         }
     }
 }
+
+
+    /* 테스트 메소드
+    public static void dbView() {
+        conn = dbConnect();
+        try {
+            String sql = "SELECT * FROM `game`";
+
+            //쿼리 준비
+            pstmt = conn.prepareStatement(sql);
+
+            //rs 변수에 데이터 삽입
+            rs = pstmt.executeQuery();
+
+            String num = null;
+            String user_id = null;
+            String user_pw = null;
+            String user_name = null;
+            String marble = null;
+            String create_at = null;
+            String update_at = null;
+
+            //rs.next에 데이터가 들어오면 해당 반복문 실행
+            while (rs.next()) {
+                //rs.getString("컬럼명")
+                num = rs.getString("user_id");
+                user_id = rs.getString("user_id");
+                user_pw = rs.getString("user_pw");
+                user_name = rs.getString("user_name");
+                marble = rs.getString("marble");
+                create_at = rs.getString("create_at");
+                update_at = rs.getString("update_at");
+
+                System.out.println(num);
+                System.out.println(user_id);
+                System.out.println(user_pw);
+                System.out.println(user_name);
+                System.out.println(marble);
+                System.out.println(create_at);
+                System.out.println(update_at);
+                System.out.println();
+            }
+        } catch (SQLException e) {
+            System.out.println("error: " + e);
+        } finally { //데이터 베이스를 연결했으면 항상 닫아야함 (안하면 풀 현상)
+            dbClose();
+        }
+    }
+    */
