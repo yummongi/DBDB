@@ -219,6 +219,8 @@ public class DBConn {
                     user_id = rs.getString("user_id");
                     user_pw = rs.getString("user_pw");
                     user_name = rs.getString("user_name");
+                    marble = rs.getString("marble");
+                    update_at = rs.getString("update_at");
 
                     if (id.equalsIgnoreCase(user_id)) {
                         break;
@@ -235,6 +237,8 @@ public class DBConn {
                         System.out.println("당신의 아이디: " + user_id);
                         System.out.println("당신의 패스워드: " + user_pw);
                         System.out.println("당신의 이름: " + user_name);
+                        System.out.println("보유한 구슬: " + marble);
+                        System.out.println("마지막 로그인 기록: " + update_at);
 
                         stmt = conn.createStatement();
                         stmt.execute("UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';");
