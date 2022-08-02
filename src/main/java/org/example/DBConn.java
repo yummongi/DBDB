@@ -33,6 +33,7 @@ public class DBConn {
         return conn;
     }
 
+    /* 테스트 메소드 */
     public static void dbView() {
         Connection conn = null;
         conn = dbConnect();
