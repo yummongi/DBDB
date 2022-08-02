@@ -121,15 +121,14 @@ public class DBConn {
         Connection conn = dbConnect();
 
         try {
-            String sql = "SELECT * FROM `game`";
+            String sql = "SELECT user_id, user_pw, user_name, marble, update_at FROM `game`;";
             //String sql_up = "UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';";
 
             //쿼리 준비
-            pstmt = conn.prepareStatement(sql);
+
             stmt = conn.createStatement();
 
-            //rs 변수에 데이터 삽입
-            rs = pstmt.executeQuery();
+
 
 
             System.out.println("오징어 게임에 오신 것을 환영합니다.");
@@ -141,6 +140,10 @@ public class DBConn {
                 id = scanner.next();
                 System.out.print("패스워드 입력: ");
                 pw = scanner.next();
+
+                pstmt = conn.prepareStatement(sql);
+                //rs 변수에 데이터 삽입
+                rs = pstmt.executeQuery();
 
                 while (rs.next()) {
                     user_id = rs.getString("user_id");
