@@ -9,7 +9,10 @@ import java.util.Scanner;
 
 public class DBConn {
 
-    public static void dbConnect() {
+    public static Connection dbConnect() {
+
+        Connection conn = null;
+
         final String driver = "org.mariadb.jdbc.Driver"; //패키지
         final String DB_IP = "localhost"; //접속 아이피
         final String DB_PORT = "3306"; //포트
@@ -19,7 +22,7 @@ public class DBConn {
 
         try {
             Class.forName(driver);
-            Connection conn = DriverManager.getConnection(DB_URL, "root", "1234");
+            conn = DriverManager.getConnection(DB_URL, "root", "1234");
             if (conn != null) {
                 System.out.println("DB 접속 성공");
             }
@@ -31,12 +34,15 @@ public class DBConn {
             System.out.println("DB 접속 실패");
             e.printStackTrace();
         }
+        return conn;
     }
 
     public static void dbView() {
-        dbConnect();
-        PreparedStatement pstmt = null;
         Connection conn = null;
+        conn = dbConnect();
+
+
+        PreparedStatement pstmt = null;
         ResultSet rs = null;
 
         try {
@@ -104,7 +110,7 @@ public class DBConn {
     public static void register() {
         dbConnect();
         PreparedStatement pstmt = null;
-        Connection conn = null;
+        Connection conn = dbConnect();;
         ResultSet rs = null;
 
         try {
@@ -163,7 +169,7 @@ public class DBConn {
     public static void login() {
         dbConnect();
         PreparedStatement pstmt = null;
-        Connection conn = null;
+        Connection conn = dbConnect();;
         ResultSet rs = null;
         try {
             String sql = "SELECT * FROM `game`";
