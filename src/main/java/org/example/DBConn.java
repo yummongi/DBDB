@@ -186,8 +186,7 @@ public class DBConn {
         ResultSet rs = null;
         try {
             String sql = "SELECT * FROM `game`";
-            //String sql_name = "SELECT user_name FROM `game` WHERE user_id = 'user_id'";
-            String sql_up = "UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';";
+            //String sql_up = "UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';";
 
             //쿼리 준비
             pstmt = conn.prepareStatement(sql);
@@ -240,7 +239,7 @@ public class DBConn {
                         stmt = conn.createStatement();
                         stmt.execute("UPDATE `game` SET `marble`='10', update_at = NOW() WHERE `user_id`= '" + user_id + "';");
 
-                        System.out.println("로그인 기록이 업데이트 되었습니다..");
+                        System.out.println("로그인 기록이 업데이트 되었습니다!!");
                     } else {
                         System.out.println("비밀번호가 틀렸습니다!");
                     }
