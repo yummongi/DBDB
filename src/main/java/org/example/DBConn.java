@@ -110,7 +110,7 @@ public class DBConn {
     public static void register() {
         dbConnect();
         PreparedStatement pstmt = null;
-        Connection conn = dbConnect();;
+        Connection conn = dbConnect();
         ResultSet rs = null;
 
         try {
@@ -169,7 +169,7 @@ public class DBConn {
     public static void login() {
         dbConnect();
         PreparedStatement pstmt = null;
-        Connection conn = dbConnect();;
+        Connection conn = dbConnect();
         ResultSet rs = null;
         try {
             String sql = "SELECT * FROM `game`";
